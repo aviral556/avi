@@ -1,0 +1,152 @@
+
+import os
+from tkinter import *
+from tkinter import messagebox
+
+
+def r_deleted():
+    messagebox.showinfo("record deleted")
+def record_add():
+    messagebox.showinfo("added")
+def wrong_input():
+    messagebox.showinfo("wrong input")
+def do():
+    messagebox.showinfo("Record not Found")
+    
+def go():
+    messagebox.showinfo("Record Found")
+class Form1:
+    def __init__(self,val):
+        self.root=Tk()        
+        self.root.geometry("400x400+500+200")
+        self.root.config(bg="lightgreen")
+        self.l=Label(self.root,text=val)
+        self.l.place(x=10,y=30)
+        self.root.mainloop()
+def disp1():
+    
+    str1=t1.get()
+    a=os.stat("D:\\phonebook\\records.txt").st_size!=0
+    if a==True:
+        f=open("D:\\phonebook\\records.txt")
+        records=f.readlines()
+        for i in records:
+            a=(i.split(",")[1])
+            if a==str1:
+                go()
+                f=Form1(i)
+                return
+            else:
+                do()
+        
+            
+               
+                
+    f.close()
+    
+def save():
+    name=t1.get()
+    if name.isdigit()==True: 
+        wrong_input()
+        return
+    number=t2.get()
+    if number.isalpha()==True:
+        wrong_input()
+        return
+    a=os.stat("D:\\phonebook\\records.txt").st_size!=0
+    if a==True:
+        f=open("D:\\phonebook\\records.txt")
+        record=f.readlines()
+        l=len(record)-1
+        a=int(record[l].split(",")[0])
+        id=a+1
+        id=str(id)
+        record.append(f"{id},{name},{number}\n")
+        print(record)
+        f.close()
+        f=open("D:\\phonebook\\records.txt","w")
+        f.writelines(record)
+        f.close()
+        record_add()
+    else:
+        f=open("D:\\phonebook\\records.txt","w")
+        sr=(f"1,{name},{number}\n")
+        f.writelines(sr)
+        f.close()
+def delete():
+    name=t1.get()
+    f=open("D:\\phonebook\\records.txt")
+    record=f.readlines()
+    f.close()
+    for i in record:
+        d=i.split(",")[1]
+        if d==name:
+            record.remove(i)
+            r_deleted()
+    f=open("D:\\phonebook\\records.txt","w")
+    f.writelines(record)
+    f.close()
+    
+def update():
+    
+    
+    k=""
+    name=t1.get()
+    if name.isdigit()==True:
+        wrong_input()
+        return
+    number=t2.get()
+    if number.isalpha()==True:
+        wrong_input()
+        return
+    f=open("D:\\phonebook\\records.txt")
+    record=f.readlines()
+    f.close()
+    i=0
+    while i<len(record):
+        
+        
+        d=record[i].split(",")
+        a=d[1]
+        if a==name:
+            record[i]=f"{d[0]},{d[1]},{number}"
+            
+            record_add()
+            k=1
+            break
+        i+=1        
+    if k!=1:
+        
+        do()
+        return
+  
+new=Tk()
+new.geometry("700x500+250+150")
+new.title("PHONEBOOK")
+new.configure(bg="lightblue")
+f1=Frame(new)
+L1=Label(f1,text="ENTER YOUR NAME",font=("bold",20))
+L1.pack()
+t1=Entry(width=50,fg="black",font=("bold",10))
+f2=Frame(new)
+L2=Label(f2,text="ENTER YOUR MOBILE NUMBER",font=("bold",20))
+L2.pack()
+t2=Entry(width=50,fg="black",font=("bold",10))
+f1.place(x=10,y=20)
+t1.place(x=10,y=80)
+f2.place(x=10,y=140)
+t2.place(x=10,y=200)
+b1=Button(new,text="FIND",width=20,bg="pink",command=disp1)
+
+b1.config(height=2)
+b2=Button(new,text="SAVE",width=20,bg="pink",command=save)
+b2.config(height=2)
+b3=Button(new,text="DELETE",width=20,bg="pink",command=delete)
+b3.config(height=2)
+b4=Button(new,text="UPDATE",width=20,bg="pink",command=update)
+b4.config(height=2)
+b1.place(x=450,y=20)
+b2.place(x=10,y=250)
+b3.place(x=200,y=250)
+b4.place(x=100,y=330)
+new.mainloop()
